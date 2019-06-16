@@ -535,11 +535,7 @@ export default class TbFlot {
         yaxis.tickUnits = units;
         yaxis.tickDecimals = tickDecimals;
         yaxis.tickSize = tickSize;
-        if (position === "right" && tickSize === null) {
-            yaxis.alignTicksWithAxis = 1;
-        } else {
-            yaxis.alignTicksWithAxis = null;
-        }
+        yaxis.alignTicksWithAxis = position == "right" ? 1 : null;
         yaxis.position = position;
 
         yaxis.keysInfo = [];
@@ -942,6 +938,11 @@ export default class TbFlot {
                     "type": "string",
                     "default": null
                 },
+                "titleAngle": {
+                    "title": "Axis title's angle in degrees",
+                    "type": "number",
+                    "default": 0
+                },
                 "color": {
                     "title": "Ticks color",
                     "type": "string",
@@ -973,6 +974,11 @@ export default class TbFlot {
                     "title": "Axis title",
                     "type": "string",
                     "default": null
+                },
+                "titleAngle": {
+                    "title": "Axis title's angle in degrees",
+                    "type": "number",
+                    "default": 0
                 },
                 "color": {
                     "title": "Ticks color",
@@ -1042,6 +1048,7 @@ export default class TbFlot {
             "items": [
                 "xaxis.showLabels",
                 "xaxis.title",
+                "xaxis.titleAngle",
                 {
                     "key": "xaxis.color",
                     "type": "color"
@@ -1057,6 +1064,7 @@ export default class TbFlot {
                 "yaxis.tickSize",
                 "yaxis.showLabels",
                 "yaxis.title",
+                "yaxis.titleAngle",
                 {
                     "key": "yaxis.color",
                     "type": "color"

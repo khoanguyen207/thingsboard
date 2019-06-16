@@ -1,6 +1,6 @@
 package org.thingsboard.selenium;
 
-import org.junit.Assert;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -8,13 +8,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
-
-public class CreateAssetTest {
+public class SetRelationTest {
 
     @Test
-    public void createAssetTest() throws IOException {
-
+    public void setRelationTest(){
         // for windows or linux machines, update the chromedriver into the resources folder
         // https://chromedriver.storage.googleapis.com/index.html?path=74.0.3/
         System.setProperty("webdriver.chrome.driver", "D:\\Khoa\\Documents\\School\\HvA\\SE\\Jaar 3\\ASV\\chromedriver_win32\\chromedriver.exe");
@@ -27,6 +24,9 @@ public class CreateAssetTest {
         // Navigate to Thingsboard on localhost
         driver.get("http://192.168.99.100:9090/");
 
+        /*
+         * Login in Thingsboard
+         */
         // Type login info tenant in the login form
         String username = "tenant@thingsboard.org";
         String password = "tenant";
@@ -37,7 +37,9 @@ public class CreateAssetTest {
         // Click on button submit
         driver.findElement(By.xpath("//*[@class='md-raised md-button md-tb-dark-theme md-ink-ripple']")).click();
 
-        //Create new asset
+        /*
+        Navigate to asset panel
+         */
         String asset_xpath = "//li[4]/tb-menu-link[@class='ng-isolate-scope' " +
                 "and 1]/a[@class='md-button ng-scope md-ink-ripple' and 1]/span[@class='ng-binding ng-scope' and 1]";
 
@@ -46,35 +48,30 @@ public class CreateAssetTest {
                 until(ExpectedConditions.visibilityOfElementLocated(By.xpath(asset_xpath)));
         asset_link.click();
 
-        WebElement add_button = driver.findElement(By.xpath("//*[@class='tb-btn-footer md-accent md-hue-2 md-fab md-button " +
-                "ng-scope md-ink-ripple']/*[@class='ng-scope']"));
-        add_button.click();
+        //span[@class='md-headline ng-binding']
+        driver.findElement(By.xpath("//span[@class='md-headline ng-binding']")).click();
+        // To relation tab
+        driver.findElement(By.xpath("//md-tab-item[6 and @class='md-tab ' and @id='tab-item-365']")).click();
 
-        //Asset info to add
-        String asset_name = "Selenium test";
-        String asset_type = "selenium_test";
+        driver.findElement(By.xpath("//*[@id=\"tab-content-16\"]/div/tb-relation-table/md-content/div/md-toolbar[1]/div/button[1]/md-icon")).click();
 
-        WebElement asset_name_field = driver.findElement(By.xpath("//input[@id='input_150']"));
-        asset_name_field.sendKeys(asset_name);
-        WebElement asset_type_field = driver.findElement(By.xpath("//input[@id='fl-input-151']"));
-        asset_type_field.sendKeys(asset_type);
-
-//        WebElement add_button1 = driver.findElement(By.xpath("//input[@type='submit']"));
-        WebElement add_button1 = new WebDriverWait(driver, 20).
-                until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='md-raised md-primary md-button md-ink-ripple']")));
-        add_button1.click();
+        //Relation info form
+        driver.findElement(By.id("fl-input-155")).sendKeys("Contains");
+        driver.findElement(By.xpath("//*[@id=\"select_158\"]")).sendKeys("Device");
+        driver.findElement(By.xpath("//*[@id=\"fl-input-166\"]")).sendKeys("Selenium t");
+        driver.findElement(By.xpath("/html/body/div[4]/md-dialog/form/md-dialog-actions/button[1]")).click();
 
         /*
         Check if test goes well
          */
+
         try{
-            WebElement created_asset = driver.findElement(By.xpath("//*[@id=\"tb-vertical-container\"]/div/div[2]/div/section/div[1]/md-card/section/md-card-title/md-card-title-text/span"));
-            Assert.assertTrue(created_asset.getText().contains("Selenium test"));
-//            if (created_asset.getText().equals("Selenium test")){
-//                System.out.println("Test Passed!");
-//            } else {
-//                System.out.println("Test Failed!");
-//            }
+            WebElement created_customer = driver.findElement(By.xpath("//*[@id=\"tab-content-831\"]/div/tb-relation-table/md-content/div/md-table-container/table/tbody/tr/td[4]"));
+            if (created_customer.getText().equals("Selenium t")){
+                System.out.println("Test Passed!");
+            } else {
+                System.out.println("Test Failed!");
+            }
             driver.close();
 
         }catch (Exception e){

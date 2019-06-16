@@ -20,7 +20,7 @@ const maxZoom = 4;
 
 export default class TbImageMap {
 
-    constructor(ctx, $containerElement, utils, initCallback, imageUrl, disableScrollZooming, posFunction, imageEntityAlias, imageUrlAttribute) {
+    constructor(ctx, $containerElement, utils, initCallback, imageUrl, posFunction, imageEntityAlias, imageUrlAttribute) {
 
         this.ctx = ctx;
         this.utils = utils;
@@ -34,7 +34,6 @@ export default class TbImageMap {
         this.height = 0;
         this.markers = [];
         this.initCallback = initCallback;
-        this.disableScrollZooming = disableScrollZooming;
 
         if (angular.isDefined(posFunction) && posFunction.length > 0) {
             try {
@@ -166,7 +165,6 @@ export default class TbImageMap {
             this.map = L.map(this.$containerElement[0], {
                 minZoom: 1,
                 maxZoom: maxZoom,
-                scrollWheelZoom: !this.disableScrollZooming,
                 center: center,
                 zoom: 1,
                 crs: L.CRS.Simple,

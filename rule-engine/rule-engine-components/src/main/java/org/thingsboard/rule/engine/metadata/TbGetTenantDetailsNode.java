@@ -15,15 +15,17 @@
  */
 package org.thingsboard.rule.engine.metadata;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.thingsboard.rule.engine.api.RuleNode;
 import org.thingsboard.rule.engine.api.TbContext;
 import org.thingsboard.rule.engine.api.TbNodeConfiguration;
 import org.thingsboard.rule.engine.api.TbNodeException;
 import org.thingsboard.rule.engine.api.util.TbNodeUtils;
+import org.thingsboard.rule.engine.util.EntityDetails;
 import org.thingsboard.server.common.data.ContactBased;
+import org.thingsboard.server.common.data.Tenant;
 import org.thingsboard.server.common.data.plugin.ComponentType;
 import org.thingsboard.server.common.msg.TbMsg;
 
@@ -47,18 +49,20 @@ public class TbGetTenantDetailsNode extends TbAbstractGetEntityDetailsNode<TbGet
     }
 
     @Override
-    protected ListenableFuture<TbMsg> getDetails(TbContext ctx, TbMsg msg) {
-        return getTbMsgListenableFuture(ctx, msg, getDataAsJson(msg), TENANT_PREFIX);
+    protected TbMsg getDetails(TbContext ctx, TbMsg msg) {
+        return getTenantTbMsg(ctx, msg, getDataAsJson(msg));
     }
 
-    @Override
-    protected ListenableFuture<ContactBased> getContactBasedListenableFuture(TbContext ctx, TbMsg msg) {
-        return Futures.transformAsync(ctx.getTenantService().findTenantByIdAsync(ctx.getTenantId(), ctx.getTenantId()), tenant -> {
-            if (tenant != null) {
-                return Futures.immediateFuture(tenant);
-            } else {
-                return Futures.immediateFuture(null);
+    private TbMsg getTenantTbMsg(TbContext ctx, TbMsg msg, MessageData messageData) {
+        JsonElement resultObject = null;
+        Tenant tenant = ctx.getTenantService().findTenantById(ctx.getTenantId());
+        if (!config.getDetailsList().isEmpty()) {
+            for (EntityDetails entityDetails : config.getDetailsList()) {
+                resultObject = addContactProperties(messageData.getData(), tenant, entityDetails, TENANT_PREFIX);
             }
-        });
+            return transformMsg(ctx, msg, resultObject, messageData);
+        } else {
+            return msg;
+        }
     }
 }

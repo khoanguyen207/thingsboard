@@ -276,16 +276,6 @@ export default angular.module('thingsboard.types', [])
                     name: 'alias.filter-type-entity-view-search-query'
                 }
             },
-            direction: {
-                column: {
-                    value: "column",
-                    name: "direction.column"
-                },
-                row: {
-                    value: "row",
-                    name: "direction.row"
-                }
-            },
             position: {
                 top: {
                     value: "top",
